@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Layout Example</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <style>
@@ -568,14 +569,17 @@
             </figcaption>
             <a href="{% url 'productapp:liked_products' %}"></a>
         </figure>
-        <figure class="snip1361">
+        <!-- <figure class="snip1361">
             <img src="/static/plusicon.png" alt="sample99" />
             <figcaption>
-                <h3 class="text-white">Create</h3>
+              <h3 class="text-white">Create</h3>
             </figcaption>
-            <a href="#"></a>
-        </figure>
+            
+            <a></a>
+          </figure> -->
+          
     </div>
+    
 <style>
             @import url(https://fonts.googleapis.com/css?family=Oswald);
         @import url(https://fonts.googleapis.com/css?family=Quattrocento);
@@ -596,6 +600,8 @@
             border: 2px solid #B0C4DE;
             box-shadow: 2px 2px 15px #B0C4DE inset;
             border-radius: 10px;
+            display: inline-block;
+            cursor: pointer;
         }
 
         .snip1361 * {
@@ -1124,5 +1130,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
