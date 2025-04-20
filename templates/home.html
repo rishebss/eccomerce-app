@@ -419,7 +419,7 @@
         <span></span>
     </label>
     <nav class="navbar">
-    <a href="{% url 'productapp:about' %}">About</a>
+    <a href="{% url 'productapp:tandc' %}">T&C</a>
     <a href="https://wa.me/9048011906">Contact</a>
     {% if user.is_authenticated %}
     <a href="{% url 'productapp:account' %}">Account</a>
@@ -1175,7 +1175,6 @@ burger.addEventListener('click', () => {
     
 
 
-
     
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
@@ -1315,8 +1314,9 @@ burger.addEventListener('click', () => {
             <div class="footer-section contact">
                 <h2 style="font-family: myfont;">Quick Links</h2>
                 <p><a href="#home" style="font-family:myfont;color:white;">Home</a></p>
-                <p><a href="#home" style="font-family:myfont;color:white;">Designs</a></p>
-                <p><a href="#home" style="font-family:myfont;color:white;">About</a></p>
+                <p><a href="{% url 'productapp:allproducts' %}" style="font-family:myfont;color:white;">Designs</a></p>
+                <p><a href="{% url 'productapp:about' %}" style="font-family:myfont;color:white;">About</a></p>
+                <p><a href="{% url 'productapp:privacy' %}" style="font-family:myfont;color:white;">Privacy and Refund Policies</a></p>
                 <p><a href="#home" style="font-family:myfont;color:white;">Top</a></p>
                                                                                      
             </div>
@@ -1324,9 +1324,9 @@ burger.addEventListener('click', () => {
               <h2 style="font-family:myfont;">Connect Us</h2>
               <div class="social">
                 
-                <a href="https://codepen.io/Juxtopposed" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/mailicon.png" alt="" /></a>
-                <a href="https://twitter.com/juxtopposed" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/instaicon.png" alt="" /></a>
-                <a href="https://youtube.com/@juxtopposed" target="_blank" class="link" style="background: transparent;"><img style="width:4.5em;height:5.0em;" src="/static/whatsicon.png" alt="" /></a>
+                <a href="" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/mailicon.png" alt="" /></a>
+                <a href="" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/instaicon.png" alt="" /></a>
+                <a href="" target="_blank" class="link" style="background: transparent;"><img style="width:4.5em;height:5.0em;" src="/static/whatsicon.png" alt="" /></a>
               </div>
             </div>
         </div>
