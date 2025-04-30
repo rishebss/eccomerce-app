@@ -1,0 +1,1 @@
+web: gunicorn multiverseclothing.wsgi --log-file -
