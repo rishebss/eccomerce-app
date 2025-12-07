@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-@!-*%+fkkezq3ixa0qr!dxwz+_o#5-$_mkerk@&@5*1f^oi8qn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['multiverseclothing-v1-5.onrender.com','*']
+ALLOWED_HOSTS = ['*']
 
 CSRF_TRUSTED_ORIGINS = [
     'https://miniature-gianna-risheb-s-3f8e4c84.koyeb.app',  # Replace with your actual Koyeb URL
