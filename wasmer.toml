@@ -3,7 +3,12 @@ name = "eccomerce-app"
 version = "0.1.0"
 
 [dependencies]
-python = "*"
+python = ">=3.11"
+
+[build]
+# Install dependencies inside Wasmer
+command = "pip install -r requirements.txt"
 
 [script]
-start = "python manage.py runserver 0.0.0.0:8000"
+# Start Django using ASGI + Uvicorn
+start = "uvicorn multiverseclothing.asgi:application --host 0.0.0.0 --port ${PORT}"
