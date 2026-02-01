@@ -21,11 +21,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy project files
 COPY . .
 
-# Collect static files (if using Django's staticfiles)
-RUN python manage.py collectstatic --noinput
+# Collect static files for WhiteNoise
+RUN python manage.py collectstatic --noinput --clear
 
 # Expose port 8000 (Django default)
 EXPOSE 8000
 
-# Run Gunicorn (replace `eccomerce` with your project name)
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "multiverseclothing.wsgi:application"]
+# Run Gunicorn with environment variable for port
+CMD ["gunicorn", "--bind", "0.0.0.0:${PORT:-8000}", "multiverseclothing.wsgi:application"]
