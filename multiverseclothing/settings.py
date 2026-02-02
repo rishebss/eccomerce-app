@@ -87,19 +87,28 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Use SQLite with production-friendly settings
 import os
 
-# Use in-memory database for production (read/write issues with file-based DB)
-if (
-    os.environ.get("RAILWAY_ENVIRONMENT") == "production"
-    or os.environ.get("ENVIRONMENT") == "production"
-):
+if os.environ.get('RAILWAY_ENVIRONMENT') == 'production' or os.environ.get('ENVIRONMENT') == 'production':
+    # Production - use writable temp directory
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",  # In-memory DB for production
+            "NAME": os.path.join("/", "tmp", "production.db"),  # Use /tmp directory
             "OPTIONS": {
                 "check_same_thread": False,
             },
         }
+    }
+else:
+    # Local development
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "OPTIONS": {
+                "check_same_thread": False,
+            },
+        }
+    }
     }
 else:
     # Local development
