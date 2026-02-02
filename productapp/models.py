@@ -1,13 +1,13 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.conf import settings
-import jsonfield
+
 
 class Product(models.Model):
-    image = models.ImageField(upload_to='products/')
+    image = models.ImageField(upload_to="products/")
     title = models.CharField(max_length=255)
     product_id = models.CharField(max_length=255, unique=True)
-    price=models.CharField(max_length=250)
+    price = models.CharField(max_length=250)
     tag = models.CharField(max_length=25)
     color = models.CharField(max_length=225)
     size = models.CharField(max_length=225)
@@ -26,6 +26,7 @@ class Selection(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.product.title}"
 
+
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     recipient_name = models.CharField(max_length=255, blank=True, null=True)
@@ -38,9 +39,9 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
-class Magazine(models.Model):
-    pic=models.ImageField(upload_to="magazine/")
 
+class Magazine(models.Model):
+    pic = models.ImageField(upload_to="magazine/")
 
     def __str__(self):
         return f"Magazine {self.id}"
@@ -72,6 +73,7 @@ class Shop(models.Model):
     def get_categories(self):
         return self.cat.split(",")  # Split the string into a list
 
+
 class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Shop, on_delete=models.CASCADE)
@@ -80,40 +82,41 @@ class Cart(models.Model):
     def __str__(self):
         return f"{self.user.username} - {self.product.name}"
 
-class OrderCart(models.Model):
-     user=models.ForeignKey(User,on_delete=models.CASCADE)
-     info=models.ForeignKey(UserProfile,on_delete=models.CASCADE)
-     product_name = models.CharField(max_length=255)
-     color = models.CharField(max_length=225)
-     size = models.CharField(max_length=225)
-     amount = models.CharField(max_length=10)
-     payment_id = models.CharField(max_length=100)
-     paid = models.BooleanField(default=False)
-     order_confirmed = models.BooleanField(default=True)
-     shipped = models.BooleanField(default=False)
-     delivered = models.BooleanField(default=False)
-     created_at = models.DateTimeField(auto_now_add=True)
 
-     def __str__(self):
-         return f"{self.user.username} - {self.amount}"
+class OrderCart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    info = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=255)
+    color = models.CharField(max_length=225)
+    size = models.CharField(max_length=225)
+    amount = models.CharField(max_length=10)
+    payment_id = models.CharField(max_length=100)
+    paid = models.BooleanField(default=False)
+    order_confirmed = models.BooleanField(default=True)
+    shipped = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.amount}"
+
 
 class OrderDesign(models.Model):
-     user=models.ForeignKey(User,on_delete=models.CASCADE)
-     info=models.ForeignKey(UserProfile,on_delete=models.CASCADE)
-     design_name = models.CharField(max_length=255)
-     designcolor = models.CharField(max_length=225)
-     designsize = models.CharField(max_length=225)
-     amount = models.CharField(max_length=10)
-     payment_id = models.CharField(max_length=100)
-     paid = models.BooleanField(default=False)
-     order_confirmed = models.BooleanField(default=True)
-     shipped = models.BooleanField(default=False)
-     delivered = models.BooleanField(default=False)
-     created_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    info = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    design_name = models.CharField(max_length=255)
+    designcolor = models.CharField(max_length=225)
+    designsize = models.CharField(max_length=225)
+    amount = models.CharField(max_length=10)
+    payment_id = models.CharField(max_length=100)
+    paid = models.BooleanField(default=False)
+    order_confirmed = models.BooleanField(default=True)
+    shipped = models.BooleanField(default=False)
+    delivered = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-     def __str__(self):
-         return f"{self.user.username} - {self.amount}"
-
+    def __str__(self):
+        return f"{self.user.username} - {self.amount}"
 
 
 class Like(models.Model):
@@ -123,5 +126,3 @@ class Like(models.Model):
 
     def __str__(self):
         return f"{self.user.username} likes {self.product.title}"
-
-

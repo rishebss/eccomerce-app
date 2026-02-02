@@ -2,8 +2,8 @@
 Django==5.0.7
 asgiref==3.8.1
 
-# Database
-libsql-client==0.3.1
+# Database (for sync command)
+# libsql-client==0.3.1  # Uncomment if using sync command in production
 
 # Web Server
 gunicorn==23.0.0
@@ -36,6 +36,3 @@ urllib3==2.2.2
 certifi==2024.8.30
 idna==3.8
 charset-normalizer==3.3.2
-
-# Optional: django-libsql (if you can install git in production)
-# django-libsql @ git+https://github.com/aaronkazah/django-libsql.git@359a187eaaf1c227d326f08b913f42697265a73c
