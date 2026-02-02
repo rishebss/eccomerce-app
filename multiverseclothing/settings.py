@@ -84,40 +84,16 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Use SQLite with production-friendly settings
-import os
-
-if (
-    os.environ.get("RAILWAY_ENVIRONMENT") == "production"
-    or os.environ.get("ENVIRONMENT") == "production"
-    or not DEBUG
-):
-    # Production - use Turso database
-    DATABASES = {
-        "default": {
-            "ENGINE": "django_libsql",
-            "NAME": "multiverseedb-revet-db.aws-ap-south-1.turso.io",
-            "USER": "",
-            "PASSWORD": "",
-            "HOST": "",
-            "PORT": "",
-            "OPTIONS": {
-                "auth_token": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzAwNDIyNjgsImlkIjoiNGUyYTEzYzktMTIwMS00NWViLThlOTgtMzQzYTQyODhmNzQ0IiwicmlkIjoiMDA2NjgxMWItYWZiOC00OGQwLWEyNmItNjEyODBkYTMyN2VmIn0.CSG4404T3ylfV_GxkW9eM-SKpc9XCDlY2GVJS1MY5UcmWTCr8OmiJ3UVUC_G-mBqhDJsng8QMTkeB_gb0EINBA",
-                "secure": True,
-            },
-        }
+# Use SQLite database for all environments
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+        "OPTIONS": {
+            "check_same_thread": False,
+        },
     }
-else:
-    # Local development - use SQLite
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-            "OPTIONS": {
-                "check_same_thread": False,
-            },
-        }
-    }
+}
 
 
 # Password validation
