@@ -90,19 +90,25 @@ import os
 if (
     os.environ.get("RAILWAY_ENVIRONMENT") == "production"
     or os.environ.get("ENVIRONMENT") == "production"
+    or not DEBUG
 ):
-    # Production - use writable temp directory
+    # Production - use Turso database
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": os.path.join("/", "tmp", "production.db"),  # Use /tmp directory
+            "ENGINE": "django_libsql",
+            "NAME": "multiverseedb-revet-db.aws-ap-south-1.turso.io",
+            "USER": "",
+            "PASSWORD": "",
+            "HOST": "",
+            "PORT": "",
             "OPTIONS": {
-                "check_same_thread": False,
+                "auth_token": os.environ.get("TURSO_AUTH_TOKEN", ""),
+                "secure": True,
             },
         }
     }
 else:
-    # Local development
+    # Local development - use SQLite
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
@@ -112,10 +118,6 @@ else:
             },
         }
     }
-
-# Add Turso sync configuration
-TURSO_URL = "libsql://multiverseedb-revet-db.aws-ap-south-1.turso.io"
-TURSO_AUTH_TOKEN = "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzAwNDIyNjgsImlkIjoiNGUyYTEzYzktMTIwMS00NWViLThlOTgtMzQzYTQyODhmNzQ0IiwicmlkIjoiMDA2NjgxMWItYWZiOC00OGQwLWEyNmItNjEyODBkYTMyN2VmIn0.CSG4404T3ylfV_GxkW9eM-SKpc9XCDlY2GVJS1MY5UcmWTCr8OmiJ3UVUC_G-mBqhDJsng8QMTkeB_gb0EINBA"
 
 
 # Password validation
