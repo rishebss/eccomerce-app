@@ -32,7 +32,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",  # Replace with your actual Koyeb URL
     "http://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",
     "https://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev",
-    "http://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev"
+    "http://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev",
 ]
 
 # Application definition
@@ -84,16 +84,34 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Use SQLite with Turso sync
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "turso_sync.db",
-        "OPTIONS": {
-            "check_same_thread": False,
-        },
+# Use SQLite with production-friendly settings
+import os
+
+# Use in-memory database for production (read/write issues with file-based DB)
+if (
+    os.environ.get("RAILWAY_ENVIRONMENT") == "production"
+    or os.environ.get("ENVIRONMENT") == "production"
+):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",  # In-memory DB for production
+            "OPTIONS": {
+                "check_same_thread": False,
+            },
+        }
     }
-}
+else:
+    # Local development
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+            "OPTIONS": {
+                "check_same_thread": False,
+            },
+        }
+    }
 
 # Add Turso sync configuration
 TURSO_URL = "libsql://multiverseedb-revet-db.aws-ap-south-1.turso.io"
