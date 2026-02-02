@@ -102,7 +102,7 @@ if (
             "HOST": "",
             "PORT": "",
             "OPTIONS": {
-                "auth_token": os.environ.get("TURSO_AUTH_TOKEN", ""),
+                "auth_token": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJhIjoicnciLCJpYXQiOjE3NzAwNDIyNjgsImlkIjoiNGUyYTEzYzktMTIwMS00NWViLThlOTgtMzQzYTQyODhmNzQ0IiwicmlkIjoiMDA2NjgxMWItYWZiOC00OGQwLWEyNmItNjEyODBkYTMyN2VmIn0.CSG4404T3ylfV_GxkW9eM-SKpc9XCDlY2GVJS1MY5UcmWTCr8OmiJ3UVUC_G-mBqhDJsng8QMTkeB_gb0EINBA",
                 "secure": True,
             },
         }
