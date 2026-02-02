@@ -87,7 +87,10 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Use SQLite with production-friendly settings
 import os
 
-if os.environ.get('RAILWAY_ENVIRONMENT') == 'production' or os.environ.get('ENVIRONMENT') == 'production':
+if (
+    os.environ.get("RAILWAY_ENVIRONMENT") == "production"
+    or os.environ.get("ENVIRONMENT") == "production"
+):
     # Production - use writable temp directory
     DATABASES = {
         "default": {
@@ -97,18 +100,6 @@ if os.environ.get('RAILWAY_ENVIRONMENT') == 'production' or os.environ.get('ENVI
                 "check_same_thread": False,
             },
         }
-    }
-else:
-    # Local development
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-            "OPTIONS": {
-                "check_same_thread": False,
-            },
-        }
-    }
     }
 else:
     # Local development
