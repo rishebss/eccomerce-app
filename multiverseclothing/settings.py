@@ -30,7 +30,9 @@ ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",  # Replace with your actual Koyeb URL
-    "http://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",  # For HTTP if needed
+    "http://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",
+    "https://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev",
+    "http://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev"
 ]
 
 # Application definition
