@@ -1,0 +1,9 @@
+{
+  "name": "multiverse-sync",
+  "version": "1.0.0",
+  "description": "Sync utilities for multiverse clothing",
+  "main": "index.js",
+  "dependencies": {
+    "@libsql/client": "^0.17.0"
+  }
+}
