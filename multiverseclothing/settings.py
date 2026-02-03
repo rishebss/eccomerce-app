@@ -84,14 +84,15 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# Use SQLite database for all environments
+# PostgreSQL database configuration
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-        "OPTIONS": {
-            "check_same_thread": False,
-        },
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "multiverse_db_ngzr",
+        "USER": "multiverseadmin",
+        "PASSWORD": "16zR0p5T48K9sMnbTMYNFq1huBZYFYft",
+        "HOST": "dpg-d612ef63jp1c73ak4nkg-a.oregon-postgres.render.com",
+        "PORT": "5432",
     }
 }
 
