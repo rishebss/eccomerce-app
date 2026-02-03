@@ -86,13 +86,14 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 
 # PostgreSQL database configuration
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "multiverse_db_ngzr",
-        "USER": "multiverseadmin",
-        "PASSWORD": "16zR0p5T48K9sMnbTMYNFq1huBZYFYft",
-        "HOST": "dpg-d612ef63jp1c73ak4nkg-a.oregon-postgres.render.com",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'icauxbpujbgomujlupjz',
+        'USER': 'msbglhstsxkvruldxaig',
+        'PASSWORD': 'swujrysfdnikyuijqcbihtzsqtdjzj',
+        'HOST': '9qasp5v56q8ckkf5dc.leapcellpool.com',
+        'PORT': '6438',
+        'OPTIONS': {'sslmode': 'require'}
     }
 }
 
