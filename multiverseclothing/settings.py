@@ -11,10 +11,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from urllib.parse import parse_qsl, unquote, urlparse
 import os
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from the project's .env file.
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -84,18 +90,54 @@ WSGI_APPLICATION = "multiverseclothing.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# PostgreSQL database configuration
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'icauxbpujbgomujlupjz',
-        'USER': 'msbglhstsxkvruldxaig',
-        'PASSWORD': 'swujrysfdnikyuijqcbihtzsqtdjzj',
-        'HOST': '9qasp5v56q8ckkf5dc.leapcellpool.com',
-        'PORT': '6438',
-        'OPTIONS': {'sslmode': 'require'}
-    }
-}
+# PostgreSQL database configuration.
+# Prefers DATABASE_URL (postgresql://user:pass@host:port/name?sslmode=...);
+# falls back to the individual DB_* variables. Query parameters are passed
+# through as connection OPTIONS. sslnegotiation is dropped because the bundled
+# psycopg2/libpq here rejects it ("invalid connection option").
+def _database_config():
+    options = {}
+    url = os.environ.get("DATABASE_URL")
+    if url:
+        parsed = urlparse(url)
+        config = {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": unquote(parsed.path.lstrip("/")),
+            "USER": unquote(parsed.username or ""),
+            "PASSWORD": unquote(parsed.password or ""),
+            "HOST": parsed.hostname or "",
+            "PORT": str(parsed.port or ""),
+        }
+        for key, values in parse_qsl(parsed.query):
+            if key == "sslnegotiation":
+                continue
+            options[key] = values
+    else:
+        config = {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": os.environ.get("DB_NAME", ""),
+            "USER": os.environ.get("DB_USER", ""),
+            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+            "HOST": os.environ.get("DB_HOST", ""),
+            "PORT": os.environ.get("DB_PORT", "5432"),
+        }
+        if os.environ.get("DB_SSLMODE"):
+            options["sslmode"] = os.environ["DB_SSLMODE"]
+
+    if options:
+        config["OPTIONS"] = options
+    return config
+
+
+DATABASES = {"default": _database_config()}
+
+if not DATABASES["default"]["NAME"]:
+    from django.core.exceptions import ImproperlyConfigured
+
+    raise ImproperlyConfigured(
+        "No database configured. Set DATABASE_URL (or DB_NAME and related "
+        "DB_* variables) in the environment or in the project's .env file."
+    )
 
 
 # Password validation
@@ -147,3 +189,25 @@ RAZORPAY_KEY_SECRET = "Sg6ymJfWNf4atGBsqXhuaALE"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# Leapcell Storage (S3-compatible)
+AWS_ACCESS_KEY_ID = os.environ.get(
+    "LEAPCELL_ACCESS_KEY_ID", "1cdcae51c65a4ccfac712aabe881cea8"
+)
+AWS_SECRET_ACCESS_KEY = os.environ.get("LEAPCELL_SECRET_KEY", "")
+AWS_STORAGE_BUCKET_NAME = os.environ.get(
+    "LEAPCELL_BUCKET_NAME", "os-wsp2007474520584683520-anjs-freg-wgwaxlrx"
+)
+AWS_S3_ENDPOINT_URL = os.environ.get(
+    "LEAPCELL_ENDPOINT", "https://objstorage.leapcell.io"
+)
+AWS_S3_REGION_NAME = os.environ.get("LEAPCELL_REGION", "us-east-1")
+AWS_DEFAULT_ACL = "public-read"
+AWS_S3_OBJECT_PARAMETERS = {
+    "CacheControl": "max-age=86400",
+}
+AWS_QUERYSTRING_AUTH = False
+
+# Media files storage
+MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/"
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
