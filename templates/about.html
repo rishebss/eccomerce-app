@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -154,8 +155,16 @@ img {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 1rem;
-  
+  align-items: center;
+  gap: 0.5rem;
+}
+
+footer .social img {
+  width: 2em;
+  height: 2em;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
 }
 
 a {
@@ -277,16 +286,16 @@ a {
       <h3 style="font-family:myfont;margin-bottom:45px;margin-left:-10px;">MULTIVERSE CLOTHING</h3>
       
       <div class="social">
-        <a href="mailto:multiverseclothings@gmail.com" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/mailicon.png" alt="" /></a>
-        <a href="https://www.instagram.com/multiverse_clothing/profilecard/?igsh=MnVvbWtic2IzcWRw" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/instaicon.png" alt="" /></a>
-        <a href="https://wa.me/9048011906" target="_blank" class="link" style="background: transparent;"><img style="width:4.5em;height:5.0em;" src="/static/whatsicon.png" alt="" /></a>
+        <a href="mailto:multiverseclothings@gmail.com" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:20px;" aria-label="Email Multiverse Clothing"><img src="{% static 'img/gmail.svg' %}" alt="Email Multiverse Clothing" /></a>
+        <a href="https://www.instagram.com/multiverse_clothing/profilecard/?igsh=MnVvbWtic2IzcWRw" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:20px;" aria-label="Multiverse Clothing on Instagram"><img src="{% static 'img/instagram.svg' %}" alt="Multiverse Clothing on Instagram" /></a>
+        <a href="https://wa.me/9048011906" target="_blank" rel="noopener" class="link" style="background: transparent;" aria-label="Chat on WhatsApp"><img src="{% static 'img/whatsapp.svg' %}" alt="Chat on WhatsApp" /></a>
       </div>
       <br>
       <p style="color: #818181; font-size: smaller">2024 © All Rights Reserved</p>
     </div>
     <div class="col col2 ">
       <p><a href="{% url 'credentials:home' %}">HOME</a></p>
-      <p<a href="tel:+91 90747 60272">CALL US</a></p>
+      <p><a href="tel:+919074760272">CALL US</a></p>
       <p>PRIVACY POLICIES</p>
       <p>SOCIALS</p>
     </div>
