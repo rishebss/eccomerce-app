@@ -37,8 +37,6 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",  # Replace with your actual Koyeb URL
     "http://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",
-    "https://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev",
-    "http://eccomerce-app-rishebss3113-2o7p5w58.leapcell.dev",
 ]
 
 # Application definition
@@ -50,6 +48,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "cloudinary_storage",
+    "cloudinary",
     "credentials",
     "productapp",
     "custom",
@@ -190,24 +190,20 @@ RAZORPAY_KEY_SECRET = "Sg6ymJfWNf4atGBsqXhuaALE"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# Leapcell Storage (S3-compatible)
-AWS_ACCESS_KEY_ID = os.environ.get(
-    "LEAPCELL_ACCESS_KEY_ID", "1cdcae51c65a4ccfac712aabe881cea8"
-)
-AWS_SECRET_ACCESS_KEY = os.environ.get("LEAPCELL_SECRET_KEY", "")
-AWS_STORAGE_BUCKET_NAME = os.environ.get(
-    "LEAPCELL_BUCKET_NAME", "os-wsp2007474520584683520-anjs-freg-wgwaxlrx"
-)
-AWS_S3_ENDPOINT_URL = os.environ.get(
-    "LEAPCELL_ENDPOINT", "https://objstorage.leapcell.io"
-)
-AWS_S3_REGION_NAME = os.environ.get("LEAPCELL_REGION", "us-east-1")
-AWS_DEFAULT_ACL = "public-read"
-AWS_S3_OBJECT_PARAMETERS = {
-    "CacheControl": "max-age=86400",
+# Media files storage - all ImageFields share this one storage.
+# Uses Cloudinary when credentials are provided, otherwise local disk.
+MEDIA_URL = "/media/"
+CLOUDINARY_STORAGE = {
+    "CLOUD_NAME": os.environ.get("CLOUDINARY_CLOUD_NAME", ""),
+    "API_KEY": os.environ.get("CLOUDINARY_API_KEY", ""),
+    "API_SECRET": os.environ.get("CLOUDINARY_API_SECRET", ""),
+    "PREFIX": "",
 }
-AWS_QUERYSTRING_AUTH = False
-
-# Media files storage
-MEDIA_URL = f"{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/media/"
-DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+if (
+    CLOUDINARY_STORAGE["CLOUD_NAME"]
+    and CLOUDINARY_STORAGE["API_KEY"]
+    and CLOUDINARY_STORAGE["API_SECRET"]
+):
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+else:
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"

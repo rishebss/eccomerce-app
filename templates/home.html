@@ -8,15 +8,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>home</title>
-    <link rel="stylesheet" href="style.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://unpkg.com/flickity@2/dist/flickity.min.css"
-    <link href="https://unpkg.com/swiper/swiper-bundle.min.css" rel='stylesheet'>
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <!-- Flickity needs its stylesheet: .flickity-viewport{overflow:hidden} is what
+         stops the translated carousel cells from scrolling the whole page sideways -->
+    <link href="https://unpkg.com/flickity@2/dist/flickity.min.css" rel="stylesheet">
 <style>
    
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+        @import url("https://fonts.googleapis.com/css?family=IBM%20Plex%20Sans:500|IBM%20Plex%20Sans:300");
 
         * {
             margin: 0;
@@ -25,10 +25,17 @@
             font-family: "Poppins", sans-serif;
         }
 
+        /* Page must never scroll sideways (hero/carousel/collections are full width) */
+        html { overflow-x: hidden; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #444 #1b2a3a; }
+        body { overflow-x: hidden; overflow-y: visible; }
+        /* --page-pad is the body padding. Full-bleed elements (hero, footer)
+           break out of it instead of using 100vw (100vw also counts the
+           vertical scrollbar, so it used to overflow the page width). */
+        :root { --m: 4rem; --page-pad: 30px; }
         body {
             min-height: 60vh;
             background: black;
-            margin-top:450px;
+            padding-top: 80px;
 
              background-color: #1b2a3a;
     background-image:
@@ -36,7 +43,7 @@
         radial-gradient(at 82% 65%, hsl(331.03, 49%, 12%) 0, transparent 55%);
             background-repeat: no-repeat;
             background-attachment: fixed;
-            padding:30px;
+            padding: var(--page-pad);
             width:100%;
             
             
@@ -121,6 +128,10 @@
         }
 
         @media (max-width: 768px) {
+            html, body { overflow-x: hidden !important; width: 100%; }
+            .header, .navbar { max-width: 100%; box-sizing: border-box; padding: 10px 4%; }
+            .logo { font-size: 22px; }
+            .navbar a { font-size: 13px; margin-left: 15px; }
             .burger {
                 display: block;
                 position: relative;
@@ -258,7 +269,9 @@
             height:800px;
             overflow: hidden;
             position: relative;
-            width: 100vw;
+            /* full-bleed: 100vw overflowed the page by the body padding + scrollbar */
+            width: calc(100% + (2 * var(--page-pad)));
+            margin-left: calc(-1 * var(--page-pad));
             box-shadow: 0 100px 100px rgba(0, 0, 0, 0.9);
             border: 0.2px solid black;
             margin-top:20px;
@@ -383,7 +396,7 @@
         background:linear-gradient(to right, black, rgba(0, 0, 1, 1)),
         margin-top:50px;
         margin-bottom:50px;
-        width:100vw;
+        width: calc(100% + (2 * var(--page-pad)));
         border: 4px solid black;
         box-shadow: 0 120px 50px rgba(0, 0, 3, 2);
             }
@@ -407,20 +420,20 @@
 
     </style>
 </head>
-<body>
+<body id="top">
    
 <header class="header">
-    <span1 style="font-family:myfont;margin-left:10px;font-size: 33px;color:#a9a9a9">MULTIVERSE</span1>
-    <!-- <span1 class="text-white" style="font-family:myfont;margin-left:-400px;font-size: 18px;margin-top:10px;">CLOTHING</span1> -->
-    <label for="burger" class="burger">
-        <input id="burger" type="checkbox">
+    <span style="font-family:myfont;margin-left:10px;font-size: 33px;color:#a9a9a9">MULTIVERSE</span>
+    <!-- <span class="text-white" style="font-family:myfont;margin-left:-400px;font-size: 18px;margin-top:10px;">CLOTHING</span> -->
+    <label for="burger" class="burger" aria-label="Toggle navigation menu">
+        <input id="burger" type="checkbox" aria-label="Toggle navigation menu">
         <span></span>
         <span></span>
         <span></span>
     </label>
     <nav class="navbar">
     <a href="{% url 'productapp:tandc' %}">T&C</a>
-    <a href="https://wa.me/9048011906">Contact</a>
+    <a href="https://wa.me/9048011906" target="_blank" rel="noopener">Contact</a>
     {% if user.is_authenticated %}
     <a href="{% url 'productapp:account' %}">Account</a>
     {% endif %}
@@ -434,7 +447,7 @@
 </nav>
 </header>
 
-<section class="hero image-as-background" style="background-image: url('/static/x6.jpg');">
+<section class="hero image-as-background" role="img" aria-label="Multiverse hero banner" style="background-image: url('/static/x6.jpg');">
     <div class="hero-container">
         <h5 class="hero-title animate fadeInLeft delay-600">WE ARE LUCKY<br>WE EXIST ON <br> MULTIVERSE</h5>
         <a href="{% url 'productapp:about' %}" class="hero-button animate fadeInLeft delay-800 text-center" title="Click to see more" style="text-decoration:none;">ABOUT</a>
@@ -443,53 +456,14 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-
+        // Single hero-fade handler (guarded, no duplicate bindings)
         $(window).on('scroll', function() {
-            var scrollTop = $(this).scrollTop();
-            var windowHeight = $(window).height();
-            var heroHeight = $('.hero').height();
-
-            // Calculate the opacity based on scroll position
-            var opacity = 1 - (scrollTop / heroHeight);
-
-            // Apply the opacity to the hero section
-            $('.hero').css('opacity', opacity);
-
-            // Optionally, you can apply a threshold to hide the image completely after a certain point
-            if (opacity <= 0) {
-                $('.hero').css('opacity', 0);
-            }
+            var hero = $('.hero');
+            if (!hero.length) return;
+            var heroHeight = hero.height() || 1;
+            var opacity = 1 - ($(this).scrollTop() / heroHeight);
+            hero.css('opacity', Math.max(opacity, 0));
         });
-
-</script>
-<script>
-    window.HeroFade_Object = {};
-    (function(window, $, that) {
-        that.init = function() {
-            that.cache();
-            if (that.meetsRequirements) {
-                that.bindEvents();
-            }
-        };
-        that.cache = function() {
-            that.$c = {
-                window: $(window),
-                heroSelector: $('.hero'),
-            };
-        };
-        that.meetsRequirements = function() {
-            return that.$c.heroSelector.length;
-        };
-        that.bindEvents = function() {
-            that.$c.window.on('load', that.doHero);
-        };
-        that.doHero = function() {
-            $(window).scroll(function() {
-                $(".hero").css("opacity", 1 - $(window).scrollTop() / $('.hero').height());
-            });
-        };
-        $(that.init);
-    })(window, jQuery, window.HeroFade_Object);
 </script>
 
 <div class="nav-bg"></div>
@@ -563,6 +537,165 @@
             box-shadow: 2px 2px 12px white;
         }
 
+        .flickity-page-dots { display: none; }
+        .flickity-slider { width: 100% !important; max-width: 100%; }
+        .flickity-viewport {
+          width: 100% !important;
+          max-width: 100%;
+          overflow: hidden; /* never let the slider widen the page */
+        }
+
+        /* ===== Footer (same as templates/about.html) ===== */
+        #footer {
+          --m: 4rem;
+          margin-top: 10px;
+          /* body is padded by --page-pad (about.html's body is not), so break the
+             footer out of that padding to span the full width and sit flush with
+             the bottom of the page */
+          width: calc(100% + (2 * var(--page-pad)));
+          margin-left: calc(-1 * var(--page-pad));
+          margin-right: calc(-1 * var(--page-pad));
+          margin-bottom: calc(-1 * var(--page-pad));
+          z-index: 500;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-evenly;
+          align-items: flex-end;
+          gap: 2vw;
+          padding: 5rem 2vw;
+          position: relative;
+          /* Inherited defaults on about.html, reset here because home.html
+             loads Bootstrap and its own font/colour rules */
+          color: #d5d5d5;
+          font-family: "IBM Plex Sans", sans-serif;
+          font-weight: 300;
+          font-size: calc(0.3 * var(--m));
+          line-height: normal;
+        }
+
+        #footer::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(
+            rgba(0, 0, 0, 0) 5%,
+            rgba(0, 0, 0, 0.3) 20%,
+            rgba(0, 0, 0, 0.6) 30%,
+            rgba(0, 0, 0, 0.8) 40%,
+            rgba(0, 0, 0, 1) 50%,
+            rgb(0, 0, 0)
+          );
+          z-index: -7;
+        }
+
+        #footer .backdrop {
+          z-index: -5;
+          position: absolute;
+          inset: 0;
+          backdrop-filter: blur(40px);
+          -webkit-backdrop-filter: blur(40px);
+          mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0.8) 20%, rgba(0, 0, 0, 1) 30%, rgb(0, 0, 0));
+          -webkit-mask-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0.8) 20%, rgba(0, 0, 0, 1) 30%, rgb(0, 0, 0));
+        }
+
+        #footer .col {
+          /* flex:0 0 auto overrides Bootstrap 4's `.col{flex-grow:1;flex-basis:0}`
+             which was eating all free space so space-evenly had nothing
+             to distribute and col2/col3 touched. This restores about.html behaviour. */
+          flex: 0 0 28%;
+          max-width: 28%;
+          box-sizing: border-box;
+          flex-direction: column;
+          align-items: flex-start;
+          justify-content: flex-start;
+          padding: calc(0.3 * var(--m)) calc(0.8 * var(--m));
+          width: 28%;
+        }
+
+        #footer .col2,
+        #footer .col3 {
+          backdrop-filter: blur(16px) saturate(180%);
+          -webkit-backdrop-filter: blur(16px) saturate(180%);
+          background-color: rgba(17, 25, 40, 0.75);
+          border-radius: calc(0.5 * var(--m));
+        }
+
+        #footer .social {
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        /* Single source of truth for all 3 footer icons — same box, no distortion */
+        #footer .social img,
+        #footer .social svg,
+        .footer-section .social img,
+        .footer-section .social svg {
+          width: 2em;
+          height: 2em;
+          object-fit: contain;
+          flex-shrink: 0;
+          display: block;
+          color: #e8e8e8;
+        }
+
+        #footer a {
+          text-decoration: none;
+          color: inherit;
+        }
+
+        #footer .link {
+          width: calc(0.8 * var(--m));
+          height: calc(0.8 * var(--m));
+          background-color: rgba(255, 255, 255, 0.1);
+          border-radius: calc(0.1 * var(--m));
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        /* Keep the same default heading/paragraph metrics as about.html */
+        #footer h3 {
+          font-size: 1.17em;
+          font-weight: bold;
+          line-height: normal;
+          margin: 1em 0;
+        }
+
+        #footer p {
+          font-size: inherit;
+          margin: 1em 0;
+        }
+
+        @media screen and (max-width: 1000px) {
+          #footer {
+            --m: 3rem;
+          }
+        }
+
+        @media screen and (max-width: 700px) {
+          #footer {
+            flex-direction: column;
+            padding: 2rem 5vw;
+            align-items: center;
+          }
+
+          #footer .col {
+            flex: 0 0 auto;
+            max-width: 100%;
+            width: 100%;
+            padding: calc(0.1 * var(--m)) calc(0.4 * var(--m));
+            margin-bottom: 1.5rem;
+          }
+
+          #footer .col2,
+          #footer .col3 {
+            border-radius: calc(0.3 * var(--m));
+          }
+        }
+
         .input {
             height: 30px;
             outline: none;
@@ -611,10 +744,10 @@
     <div class="flex">
         <div class="login color">Login</div>
         <div class="messages" id="messages"></div>
-        <label class="color">Username :</label>
-        <input type="text" class="input" name="username" required>
-        <label class="color">Password :</label>
-        <input type="password" class="input" name="password" required>
+        <label class="color" for="login-username">Username :</label>
+        <input type="text" id="login-username" class="input" name="username" autocomplete="username" required>
+        <label class="color" for="login-password">Password :</label>
+        <input type="password" id="login-password" class="input" name="password" autocomplete="current-password" required>
         <button type="submit">Log-in</button>
         <br>
         <div class="color align">Don't have account? <a href="{% url 'credentials:register' %}" class="span">Sign-Up</a></div>
@@ -623,77 +756,74 @@
 
 <script>
     const burger = document.querySelector('#burger');
-const navbar = document.querySelector('.navbar');
-const navbg = document.querySelector('.nav-bg');
-
-burger.addEventListener('click', () => {
-    navbar.classList.toggle('active');
-    navbg.classList.toggle('active');
-    document.body.classList.toggle('no-scroll');
-});
-
-    document.getElementById('loginLink').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        document.body.classList.add('blur-background', 'no-scroll');
-    });
-
-    document.getElementById('overlay').addEventListener('click', function() {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-        document.body.classList.remove('blur-background', 'no-scroll');
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const form = this;
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: form.method,
-            headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            const messages = document.getElementById('messages');
-            if (data.success) {
-                window.location.href = data.redirect_url;
-            } else {
-                messages.textContent = data.message;
-            }
-        });
-    });
-</script>
-
-
-
-
-<script>
-    const burger = document.querySelector('#burger');
     const navbar = document.querySelector('.navbar');
     const navbg = document.querySelector('.nav-bg');
 
-    burger.addEventListener('click', () => {
-        burger.classList.toggle('active');
-        navbar.classList.toggle('active');
-        navbg.classList.toggle('active');
-    });
+    if (burger && navbar) {
+        burger.addEventListener('click', () => {
+            burger.classList.toggle('active');
+            navbar.classList.toggle('active');
+            if (navbg) navbg.classList.toggle('active');
+            document.body.classList.toggle('no-scroll');
+        });
+    }
+
+    const loginLink = document.getElementById('loginLink');
+    const overlay = document.getElementById('overlay');
+    const loginForm = document.getElementById('loginForm');
+    if (loginLink && overlay && loginForm) {
+        loginLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            loginForm.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.classList.add('blur-background', 'no-scroll');
+        });
+
+        overlay.addEventListener('click', function() {
+            loginForm.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.classList.remove('blur-background', 'no-scroll');
+        });
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messages = document.getElementById('messages');
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else if (messages) {
+                    messages.textContent = data.message;
+                }
+            })
+            .catch(() => {
+                const messages = document.getElementById('messages');
+                if (messages) messages.textContent = 'Login failed. Please try again.';
+            });
+        });
+    }
 </script>
 <div>
     {% for message in messages %}
         <div class="alert alert-{{ message.tags }}">{{ message }}</div>
     {% endfor %}
-</div style="z-index-4000;">
+</div>
 <div class="carousel" data-flickity='{ "autoPlay": true, "prevNextButtons": false }' style="background:transparent;background-size:200px;">
-    <div class="carousel-cell" style="background-image: url(/static/darkfit14.jpg)"></div>
-    <div class="carousel-cell" style="background-image: url(/static/darkfit10.jpg)"></div>
-    <div class="carousel-cell" style="background-image: url(/static/darkfit13.jpg)"></div>
-    <div class="carousel-cell" style="background-image: url(/static/darkfit11.jpg); position: relative;">
-        <button class="carousel-btn">COMMING SOON..</button>
+    <div class="carousel-cell" role="img" aria-label="Dark fit look 1" style="background-image: url(/static/darkfit14.jpg)"></div>
+    <div class="carousel-cell" role="img" aria-label="Dark fit look 2" style="background-image: url(/static/darkfit10.jpg)"></div>
+    <div class="carousel-cell" role="img" aria-label="Dark fit look 3" style="background-image: url(/static/darkfit13.jpg)"></div>
+    <div class="carousel-cell" role="img" aria-label="Dark fit look 4" style="background-image: url(/static/darkfit11.jpg); position: relative;">
+        <button type="button" class="carousel-btn">COMING SOON..</button>
     </div>
 </div>
 
@@ -704,7 +834,14 @@ burger.addEventListener('click', () => {
 
 .carousel {
     margin-top: -90px;
+    margin-bottom: 70px;
     z-index: 10;
+    /* clip the carousel so a sliding cell can never create a page-wide
+       horizontal scrollbar */
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    padding-bottom: 10px;
 }
 
 .carousel-cell {
@@ -741,6 +878,7 @@ burger.addEventListener('click', () => {
 @media (max-width: 768px) {
     .carousel {
         margin-top: -50px;
+        margin-bottom: 45px;
         z-index: 10;
     }
 
@@ -962,11 +1100,11 @@ burger.addEventListener('click', () => {
     
 
     
-        <h2 class="text-center" style="margin-top:20px;font-family: myfont;color:#a9a9a9">COLLECTIONS</h1>
+        <h2 class="text-center collections-heading" style="margin-top:10px;margin-bottom:0;padding-top:10px;font-family: myfont;color:#a9a9a9">COLLECTIONS</h2>
     <div class="flex-container" style="margin-top:20px;margin-bottom:40px;">
-        <a href="{% url 'productapp:shop' %}">
+        <a href="{% url 'productapp:shop' %}" aria-label="Shop all store items">
         <figure class="snip1361">
-            <img src="/static/storproduct2.jpg" alt="sample45" />
+            <img src="/static/storproduct2.jpg" alt="Store items collection" />
             <figcaption>
                 <h3 class="text-white" >STORE ITEMS</h3>
             </figcaption>
@@ -974,26 +1112,26 @@ burger.addEventListener('click', () => {
         </figure>
         </a>
         <figure class="snip1361">
-            <img src="/static/storef.jpg" alt="sample99" />
+            <img src="/static/storef.jpg" alt="Trending collection" />
             <figcaption>
                 <h3 class="text-white">TRENDING</h3>
             </figcaption>
-            <a href="{% url 'productapp:shop' %}?category=trending"></a>
+            <a href="{% url 'productapp:shop' %}?category=trending" aria-label="Shop trending"></a>
         </figure>
         
         <figure class="snip1361">
-            <img src="/static/men104.jpg" alt="sample99" />
+            <img src="/static/men104.jpg" alt="Mens collection" />
             <figcaption>
                 <h3 class="text-white">MENS</h3>
             </figcaption>
-            <a href="{% url 'productapp:shop' %}?gen=men"></a>
+            <a href="{% url 'productapp:shop' %}?gen=men" aria-label="Shop mens"></a>
         </figure>
         <figure class="snip1361">
-            <img src="/static/women1.jpg" alt="sample99" />
+            <img src="/static/women1.jpg" alt="Womens collection" />
             <figcaption>
                 <h3 class="text-white">WOMENS</h3>
             </figcaption>
-            <a href="{% url 'productapp:shop' %}?gen=women"></a>
+            <a href="{% url 'productapp:shop' %}?gen=women" aria-label="Shop womens"></a>
         </figure>
         
         
@@ -1069,27 +1207,35 @@ burger.addEventListener('click', () => {
 
         .flex-container {
             display: flex;
-            flex-wrap: nowrap;
+            flex-wrap: wrap; /* wrap instead of overflowing the viewport width */
             justify-content: center;
         }
 
         @media (max-width: 575.98px) {
             .flex-container {
                 flex-direction: row;
+                flex-wrap: nowrap; /* phones keep the intended swipe row */
                 overflow-x: auto;
                 overflow-y: hidden;
                 justify-content: start;
                 -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                scrollbar-width: none; /* Firefox: no scrollbar, swipe only */
+                -ms-overflow-style: none; /* IE/Edge legacy */
+                scroll-snap-type: x mandatory;
+                padding-bottom: 8px;
             }
             .flex-container::-webkit-scrollbar {
-                display: none; /* Hide scrollbar for WebKit-based browsers */
+                display: none; /* Chrome/Safari/Opera: no scrollbar, swipe only */
+                width: 0;
+                height: 0;
             }
 
             .snip1361 {
                 flex: 0 0 auto;
+                scroll-snap-align: start;
                 width: 260px;
                 height:300px;
-                margin-right: 1px;
+                margin-right: 8px;
             }
             .snip1361 img {
             width: 100%;
@@ -1109,7 +1255,7 @@ burger.addEventListener('click', () => {
 
         <div class="figure-container">
             <figure class="snip1190">
-                <img src="/static/newlog.jpg" alt="Sample" style=" background-color: #161127; background-image:
+                <img src="/static/newlog.jpg" alt="Our designs collection" style=" background-color: #161127; background-image:
         radial-gradient(at 47% 33%, hsl(162.06, 77%, 23%) 0, transparent 59%),
         radial-gradient(at 82% 65%, hsl(216.43, 48%, 11%) 0, transparent 55%);margin-top:-40px;">
                 <figcaption>
@@ -1122,7 +1268,7 @@ burger.addEventListener('click', () => {
             </figure>
             
             <figure class="snip1190">
-                <img src="/static/trx2.png"  alt="Sample" style="width:320px;margin-top:-40px;">
+                <img src="/static/trx2.png"  alt="Thrifted clothes collection" style="width:320px;margin-top:-40px;">
                 <figcaption>
                    
                     <a href="{% url 'productapp:shop' %}?category=thrifted"  style="color:white;text-decoration: none;"><h2 >THRIFTED<span> CLOTHS</span></h2></a>
@@ -1131,17 +1277,17 @@ burger.addEventListener('click', () => {
             </figure>
             
             <figure class="snip1190">
-                <img src="/static/bresh2.png" alt="Sample" style="margin-top:-20px;">
+                <img src="/static/bresh2.png" alt="Custom design coming soon" style="margin-top:-20px;">
                 <figcaption>
                     
-                    <a href=""><h2 style="color:white;">CUSTOM<span> DESIGN</span></h2></a>
+                    <span aria-disabled="true" style="color:white;"><h2 style="color:white;">CUSTOM<span> DESIGN</span></h2></span>
                     <p style="color:rgb(227, 19, 19);">Feature Not Available</p>
                 </figcaption>
             </figure>
         </div>
         <div class="figure-container">
             <figure class="snip1190">
-                <img src="/static/cart4.png" alt="Sample" style="margin-bottom: 40px;">
+                <img src="/static/cart4.png" alt="Your shopping cart" style="margin-bottom: 40px;">
                 <figcaption>
                    
                     <a href="{% url 'productapp:view_cart' %}" style="color:white;text-decoration: none;">
@@ -1152,7 +1298,7 @@ burger.addEventListener('click', () => {
             </figure>
             
             <figure class="snip1190">
-                <img src="/static/profile2.png" alt="Sample">
+                <img src="/static/profile2.png" alt="Your account settings">
                 <figcaption>
                     
                     <a href="{% url 'productapp:account' %}"  style="color:white;text-decoration: none;"><h2 >YOUR<span> ACCOUNT</span></h2></a>
@@ -1161,7 +1307,7 @@ burger.addEventListener('click', () => {
             </figure>
             
             <figure class="snip1190">
-                <img src="/static/heart2.png" alt="Sample" style="margin-bottom: 20px;">
+                <img src="/static/heart2.png" alt="Your liked products" style="margin-bottom: 20px;">
                 <figcaption>
                     
                     <a href="{% url 'productapp:liked_products' %}"><h2 style="color:white;">LIKED<span> DESIGN</span></h2></a>
@@ -1172,6 +1318,33 @@ burger.addEventListener('click', () => {
            
 
     </main>
+
+  <footer id="footer">
+    <div class="col col1 ">
+      <h3 style="font-family:myfont;margin-bottom:45px;margin-left:-10px;">MULTIVERSE CLOTHING</h3>
+      
+      <div class="social">
+        <a href="mailto:multiverseclothings@gmail.com" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:8px;" aria-label="Email Multiverse Clothing"><img src="{% static 'img/gmail.svg' %}" alt="Email Multiverse Clothing" /></a>
+        <a href="https://www.instagram.com/multiverse_clothing/profilecard/?igsh=MnVvbWtic2IzcWRw" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:8px;" aria-label="Multiverse Clothing on Instagram"><img src="{% static 'img/instagram.svg' %}" alt="Multiverse Clothing on Instagram" /></a>
+        <a href="https://wa.me/9048011906" target="_blank" rel="noopener" class="link" style="background: transparent;" aria-label="Chat on WhatsApp"><img src="{% static 'img/whatsapp.svg' %}" alt="Chat on WhatsApp" /></a>
+      </div>
+      <br>
+      <p style="color: #818181; font-size: smaller">2024 © All Rights Reserved</p>
+    </div>
+    <div class="col col2 ">
+      <p><a href="{% url 'credentials:home' %}">HOME</a></p>
+      <p><a href="tel:+919074760272">CALL US</a></p>
+      <p>PRIVACY POLICIES</p>
+      <p>SOCIALS</p>
+    </div>
+    <div class="col col3">
+      <p>CUSTOM SERVICE</p>
+      <p><a href="{% url 'productapp:shop' %}">PRODUCTS</a></p>
+      <p><a href="{% url 'productapp:allproducts' %}">DESIGNS</a></p>
+      <p><a href="#top">BACK TO TOP</a></p>
+    </div>
+    <div class="backdrop"></div>
+  </footer>
     
 
 
@@ -1180,6 +1353,7 @@ burger.addEventListener('click', () => {
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
+            if (!document.querySelector('.swiper') || typeof Swiper === 'undefined') return;
             const swiper = new Swiper('.swiper', {
                 loop: true,
                 slidesPerView: 'auto',
@@ -1200,143 +1374,8 @@ burger.addEventListener('click', () => {
             });
         });
     </script>
-    <style>
-        
-        .footer {
-          
-        background: linear-gradient(
-          rgba(0, 0, 0, 0) 5%,
-          rgba(0, 0, 0, 0.3) 20%,
-          rgba(0, 0, 0, 0.6) 30%,
-          rgba(0, 0, 0, 0.8) 40%,
-          rgba(0, 0, 0, 1) 50%,
-          rgb(0, 0, 0)
-        );
-        z-index: -7;
-          color: white;
-          padding: 2rem;
-          text-align: center;
-          bottom:0;
-          width:110%;
-          margin-top: 100px;
-          margin-bottom: -60px;
-          
-          
-          
-      }
-      
-      .footer-content {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-          margin-bottom: 1rem;
-          margin-right:50px;
-      }
-      
-      .footer-section {
-          flex: 1;
-          margin: 1rem;
-      }
-      
-      .footer-section h2 {
-          margin-bottom: 1rem;
-          font-size: 20px;
-          color: #f4f4f4;
-      }
-      
-      .footer-section p,
-      .footer-section ul {
-          margin: 0;
-          padding: 0;
-          list-style: none;
-      }
-      
-      .footer-section p {
-          font-size: 16px;
-      }
-      
-      .footer-section ul {
-          display: flex;
-          flex-direction: column;
-      }
-      
-      .footer-section ul li {
-          margin-bottom: 0.5rem;
-      }
-      
-      .footer-section ul li a {
-          color: #f4f4f4;
-          text-decoration: none;
-          transition: color 0.3s;
-      }
-      
-      .footer-section ul li a:hover {
-          color: #1e90ff;
-      }
-      
-      .footer-section .social {
-          display: flex;
-          justify-content: center;
-      }
-      
-      .footer-section .social-icon {
-          display: inline-block;
-          margin: 0 0.5rem;
-          padding: 0.5rem 1rem;
-          border-radius: 50%;
-          background-color: #555;
-          color: white;
-          text-decoration: none;
-          font-size: 18px;
-          transition: background-color 0.3s, color 0.3s;
-      }
-      
-      .footer-section .social-icon:hover {
-          background-color: #1e90ff;
-          color: white;
-      }
-      
-      .footer-bottom {
-          border-top: 1px solid #444;
-          padding-top: 1rem;
-          font-size: 14px;
-          margin-bottom: 4rem;
-          margin-right: 40px;
-      }
-      </style>
-      <footer class="footer">
-        <div class="footer-content">
-            
-            <div class="footer-section links">
-                <h2 style="font-family:myfont;">multiverseclothing</h2>
-                <img src="/static/mmm.png" style="width:200px;margin-top: -40px;">
-            </div>
-            <div class="footer-section contact">
-                <h2 style="font-family: myfont;">Quick Links</h2>
-                <p><a href="#home" style="font-family:myfont;color:white;">Home</a></p>
-                <p><a href="{% url 'productapp:allproducts' %}" style="font-family:myfont;color:white;">Designs</a></p>
-                <p><a href="{% url 'productapp:about' %}" style="font-family:myfont;color:white;">About</a></p>
-                <p><a href="{% url 'productapp:privacy' %}" style="font-family:myfont;color:white;">Privacy and Refund Policies</a></p>
-                <p><a href="#home" style="font-family:myfont;color:white;">Top</a></p>
-                                                                                     
-            </div>
-            <div class="footer-section social">
-              <h2 style="font-family:myfont;">Connect Us</h2>
-              <div class="social">
-                
-                <a href="" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/mailicon.png" alt="" /></a>
-                <a href="" target="_blank" class="link" style="background: transparent;margin-right:20px;"><img style="width:4.5em;height:4.5em;" src="/static/instaicon.png" alt="" /></a>
-                <a href="" target="_blank" class="link" style="background: transparent;"><img style="width:4.5em;height:5.0em;" src="/static/whatsicon.png" alt="" /></a>
-              </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 Multiverse clothing. All Rights Reserved.</p>
-        </div>
-      </footer>
+
 <script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
-<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
@@ -1352,6 +1391,7 @@ burger.addEventListener('click', () => {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        @import url("https://fonts.googleapis.com/css?family=IBM%20Plex%20Sans:500|IBM%20Plex%20Sans:300");
         @font-face{
 font-family:myfont;
 src:url(/static/Geometos.ttf)
@@ -1444,35 +1484,6 @@ src:url(/static/Geometos.ttf)
             padding: 50px 0;
             margin-top:-70px;
             
-        }
-
-        footer {
-            background-color: transparent;
-            padding: 40px 20px;
-            text-align: center;
-            color: #ccc;
-        }
-
-        .footer-links a {
-            color: #ffffff;
-            margin: 0 15px;
-            transition: color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .footer-links a:hover {
-            color: #ff4757;
-        }
-
-        .social-media a {
-            margin: 0 10px;
-            color: #ffffff;
-            font-size: 1.5rem;
-            transition: color 0.3s ease;
-        }
-
-        .social-media a:hover {
-            color: #ff4757;
         }
 
         /* Navbar Styles */
@@ -1578,7 +1589,7 @@ src:url(/static/Geometos.ttf)
     </style>
     
 </head>
-<body>
+<body id="top">
 
     <header>
         <nav class="navbar navbar-expand-lg ">
@@ -1733,10 +1744,10 @@ src:url(/static/Geometos.ttf)
     <div class="flex">
         <div class="login color">Login</div>
         <div class="messages" id="messages"></div>
-        <label class="color">Username :</label>
-        <input type="text" class="input" name="username" required>
-        <label class="color">Password :</label>
-        <input type="password" class="input" name="password" required>
+        <label class="color" for="login-username">Username :</label>
+        <input type="text" id="login-username" class="input" name="username" autocomplete="username" required>
+        <label class="color" for="login-password">Password :</label>
+        <input type="password" id="login-password" class="input" name="password" autocomplete="current-password" required>
         <button type="submit">Log-in</button>
         <br>
         <div class="color align">Don't have account? <a href="{% url 'credentials:register' %}" class="span">Sign-Up</a></div>
@@ -1744,10 +1755,10 @@ src:url(/static/Geometos.ttf)
     </form>
     
 <section class="hero" id="home">
-    <img src="/static/mc4.png" style="width:300px;margin-top:160px;">
+    <img src="/static/mc4.png" alt="Multiverse Clothing logo" style="width:300px;margin-top:160px;">
     <h3>GET INTO THE MULTIVERSE !!</h3>
-    <p>The website is currently in beta stage.Stay tuned for updates!</p>
-    <button class="cta-button mb-3 mt-3"><a href="{% url 'credentials:register' %}" style="color:white;text-decoration: none;">SIGN UP!</a></button>
+    <p>The website is currently in beta stage. Stay tuned for updates!</p>
+    <a href="{% url 'credentials:register' %}" class="cta-button mb-3 mt-3" style="color:white;text-decoration: none;display:inline-block;">SIGN UP!</a>
    
     
     
@@ -1756,18 +1767,7 @@ src:url(/static/Geometos.ttf)
 
 
 
-<footer>
-    <div class="footer-links">
-        
-        <a href="" data-toggle="modal" data-target="#contactModal">Contact Us</a>
-    </div>
-    <div class="social-media mt-3">
-        <a href="https://wa.me/9048011906" aria-label="Facebook"><i class="fa-brands fa-whatsapp"></i></a>
-        <a href="mailto:multiverseclothings@gmail.com" aria-label="Twitter"><i class="fa-regular fa-envelope"></i></a>
-        <a href="https://www.instagram.com/multiverse_clothing/profilecard/?igsh=MnVvbWtic2IzcWRw" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-    </div>
-    <p class="mt-3">&copy; 2024 Multiverse Clothing. All Rights Reserved.</p>
-</footer>
+
 
 <!-- Contact Modal -->
 <div class="modal fade" id="contactModal" tabindex="-1" role="dialog" aria-labelledby="contactModalLabel" aria-hidden="true">
@@ -1782,15 +1782,15 @@ src:url(/static/Geometos.ttf)
             <div class="modal-body text-center">
                 
                 <div class="contact-icons">
-                    <a href="mailto:your-email@example.com" class="d-block mb-2">
+                    <a href="mailto:multiverseclothings@gmail.com" class="d-block mb-2">
                         <i class="fas fa-envelope" style="font-size: 2rem; color: #0e4716;"></i>
                         <p>Email Us</p>
                     </a>
-                    <a href="tel:+1234567890" class="d-block mb-2">
+                    <a href="tel:+919074760272" class="d-block mb-2">
                         <i class="fas fa-phone" style="font-size: 2rem; color: #0e4716;"></i>
                         <p>Call Us</p>
                     </a>
-                    <a href="https://wa.me/1234567890" target="_blank" class="d-block mb-2">
+                    <a href="https://wa.me/9048011906" target="_blank" rel="noopener" class="d-block mb-2">
                         <i class="fab fa-whatsapp" style="font-size: 2rem; color: #0e4716;"></i>
                         <p>WhatsApp Us</p>
                     </a>
@@ -1801,54 +1801,197 @@ src:url(/static/Geometos.ttf)
 </div>
 
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script>
     // Toggle collapse when the menu icon is clicked
-$('#check-icon').change(function() {
-    $('#navbarNav').toggleClass('show');
-});
-
-</script>
-<script>
-     document.getElementById('loginLink').addEventListener('click', function(event) {
-        event.preventDefault();
-        document.getElementById('loginForm').style.display = 'block';
-        document.getElementById('overlay').style.display = 'block';
-        document.body.classList.add('blur-background', 'no-scroll');
-    });
-
-    document.getElementById('overlay').addEventListener('click', function() {
-        document.getElementById('loginForm').style.display = 'none';
-        document.getElementById('overlay').style.display = 'none';
-        document.body.classList.remove('blur-background', 'no-scroll');
-    });
-
-    document.getElementById('loginForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        const form = this;
-        const formData = new FormData(form);
-
-        fetch(form.action, {
-            method: form.method,
-            headers: {
-                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
-            },
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            const messages = document.getElementById('messages');
-            if (data.success) {
-                window.location.href = data.redirect_url;
-            } else {
-                messages.textContent = data.message;
-            }
+    if ($('#check-icon').length) {
+        $('#check-icon').change(function() {
+            $('#navbarNav').toggleClass('show');
         });
-    });
+    }
+
+    const loginLink = document.getElementById('loginLink');
+    const overlay = document.getElementById('overlay');
+    const loginForm = document.getElementById('loginForm');
+
+    if (loginLink && overlay && loginForm) {
+        loginLink.addEventListener('click', function(event) {
+            event.preventDefault();
+            loginForm.style.display = 'block';
+            overlay.style.display = 'block';
+            document.body.classList.add('blur-background', 'no-scroll');
+        });
+
+        overlay.addEventListener('click', function() {
+            loginForm.style.display = 'none';
+            overlay.style.display = 'none';
+            document.body.classList.remove('blur-background', 'no-scroll');
+        });
+
+        loginForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const form = this;
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: form.method,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messages = document.getElementById('messages');
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    messages.textContent = data.message;
+                }
+            });
+        });
+    }
 </script>
 
 
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<style>
+        
+        .footer {
+          
+        background: linear-gradient(
+          rgba(0, 0, 0, 0) 5%,
+          rgba(0, 0, 0, 0.3) 20%,
+          rgba(0, 0, 0, 0.6) 30%,
+          rgba(0, 0, 0, 0.8) 40%,
+          rgba(0, 0, 0, 1) 50%,
+          rgb(0, 0, 0)
+        );
+        z-index: -7;
+          color: white;
+          padding: 2rem;
+          text-align: center;
+          bottom:0;
+          /* was 110%, which forced the page to scroll sideways */
+          width: calc(100% + (2 * var(--page-pad)));
+          margin-left: calc(-1 * var(--page-pad));
+          margin-top: 100px;
+          margin-bottom: calc(-1 * var(--page-pad));
+          
+          
+          
+      }
+      
+      .footer-content {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          margin-bottom: 1rem;
+          margin-right:50px;
+      }
+      
+      .footer-section {
+          flex: 1;
+          margin: 1rem;
+      }
+      
+      .footer-section h2 {
+          margin-bottom: 1rem;
+          font-size: 20px;
+          color: #f4f4f4;
+      }
+      
+      .footer-section p,
+      .footer-section ul {
+          margin: 0;
+          padding: 0;
+          list-style: none;
+      }
+      
+      .footer-section p {
+          font-size: 16px;
+      }
+      
+      .footer-section ul {
+          display: flex;
+          flex-direction: column;
+      }
+      
+      .footer-section ul li {
+          margin-bottom: 0.5rem;
+      }
+      
+      .footer-section ul li a {
+          color: #f4f4f4;
+          text-decoration: none;
+          transition: color 0.3s;
+      }
+      
+      .footer-section ul li a:hover {
+          color: #1e90ff;
+      }
+      
+      .footer-section .social {
+          display: flex;
+          justify-content: center;
+      }
+      
+      .footer-section .social-icon {
+          display: inline-block;
+          margin: 0 0.5rem;
+          padding: 0.5rem 1rem;
+          border-radius: 50%;
+          background-color: #555;
+          color: white;
+          text-decoration: none;
+          font-size: 18px;
+          transition: background-color 0.3s, color 0.3s;
+      }
+      
+      .footer-section .social-icon:hover {
+          background-color: #1e90ff;
+          color: white;
+      }
+      
+      .footer-bottom {
+          border-top: 1px solid #444;
+          padding-top: 1rem;
+          font-size: 14px;
+          margin-bottom: 4rem;
+          margin-right: 40px;
+      }
+      </style>
+      <footer class="footer">
+        <div class="footer-content">
+            
+            <div class="footer-section links">
+                <h2 style="font-family:myfont;">multiverseclothing</h2>
+                <img src="/static/mmm.png" alt="Multiverse Clothing logo" style="width:200px;margin-top: -40px;">
+            </div>
+            <div class="footer-section contact">
+                <h2 style="font-family: myfont;">Quick Links</h2>
+                <p><a href="#home" style="font-family:myfont;color:white;">Home</a></p>
+                <p><a href="{% url 'productapp:allproducts' %}" style="font-family:myfont;color:white;">Designs</a></p>
+                <p><a href="{% url 'productapp:about' %}" style="font-family:myfont;color:white;">About</a></p>
+                <p><a href="{% url 'productapp:privacy' %}" style="font-family:myfont;color:white;">Privacy and Refund Policies</a></p>
+                <p><a href="#home" style="font-family:myfont;color:white;">Top</a></p>
+                                                                                     
+            </div>
+            <div class="footer-section social">
+              <h2 style="font-family:myfont;">Connect Us</h2>
+              <div class="social">
+                
+                <a href="mailto:multiverseclothings@gmail.com" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:8px;" aria-label="Email Multiverse Clothing"><img src="{% static 'img/gmail.svg' %}" alt="Email Multiverse Clothing" /></a>
+                <a href="https://www.instagram.com/multiverse_clothing/profilecard/?igsh=MnVvbWtic2IzcWRw" target="_blank" rel="noopener" class="link" style="background: transparent;margin-right:8px;" aria-label="Multiverse Clothing on Instagram"><img src="{% static 'img/instagram.svg' %}" alt="Multiverse Clothing on Instagram" /></a>
+                <a href="https://wa.me/9048011906" target="_blank" rel="noopener" class="link" style="background: transparent;" aria-label="Chat on WhatsApp"><img src="{% static 'img/whatsapp.svg' %}" alt="Chat on WhatsApp" /></a>
+              </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Multiverse clothing. All Rights Reserved.</p>
+        </div>
+      </footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

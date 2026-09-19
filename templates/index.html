@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root { --m: 4rem; }
         @font-face{
 font-family:myfont;
 src:url(/static/Geometos.ttf)
@@ -214,6 +215,30 @@ src:url(/static/Geometos.ttf)
   transition: bottom 200ms 100ms, transform 100ms;
 }
 
+        #footer {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: space-between;
+          padding: 2rem;
+          position: relative;
+          overflow: hidden;
+        }
+        .col { flex-direction: column; align-items: flex-start; justify-content: flex-start; padding: calc(0.3 * var(--m)) calc(0.8 * var(--m)); width: 28%; }
+        .col2, .col3 {
+          backdrop-filter: blur(16px) saturate(180%);
+          -webkit-backdrop-filter: blur(16px) saturate(180%);
+          background-color: rgba(17, 25, 40, 0.75);
+          border-radius: calc(0.5 * var(--m));
+        }
+        .social { display: flex; flex-direction: row; justify-content: flex-start; gap: 1rem; }
+        .link { width: calc(0.8 * var(--m)); height: calc(0.8 * var(--m)); background-color: rgba(255,255,255,0.1); border-radius: calc(0.1 * var(--m)); display: flex; justify-content: center; align-items: center; }
+        .backdrop {
+          z-index: -5; position: absolute; inset: 0;
+          backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px);
+          mask-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5) 10%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,1) 30%, rgb(0,0,0));
+          -webkit-mask-image: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.5) 10%, rgba(0,0,0,0.8) 20%, rgba(0,0,0,1) 30%, rgb(0,0,0));
+        }
+
 .check-icon:checked + .icon-menu > .bar--1 {
   transition: top 200ms, transform 200ms 100ms;
 }
@@ -269,14 +294,7 @@ src:url(/static/Geometos.ttf)
 
 
 
-<footer>
-    <div class="footer-links">
-        
-        <a href="" data-toggle="modal" data-target="#contactModal">Contact Us</a>
-    </div>
-    <div class="social-media mt-3">
-        <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+
         <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
     </div>
     <p class="mt-3">&copy; 2024 Multiverse Clothing. All Rights Reserved.</p>
