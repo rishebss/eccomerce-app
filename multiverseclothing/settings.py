@@ -37,6 +37,8 @@ ALLOWED_HOSTS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
     "https://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",  # Replace with your actual Koyeb URL
     "http://miniature-gianna-risheb-s-3f8e4c84.koyeb.app",
+    "https://multiverse.productecho.com",
+    "http://multiverse.productecho.com",
 ]
 
 # Application definition
